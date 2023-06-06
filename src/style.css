@@ -1,0 +1,63 @@
+body {
+    margin: 0;
+}
+
+#main-container {
+    display: flex;
+}
+
+#todo-list-title {
+    background-color: rgb(216, 63, 63);
+    color: white;
+    height: 8vh;
+    font-size: 37px;
+    text-align: center;
+}
+
+#menu-project-buttons {
+    display: flex;
+    width: 45vw;
+    background-color: rgb(231, 224, 224);
+    border: 1px solid black;
+}
+
+#menu-todo-buttons {
+    display: flex;
+    width: 55vw;
+    background-color: rgb(231, 224, 224);
+    border: 1px solid black;
+}
+
+#menu-project-buttons button, #menu-todo-buttons button {
+    background-color: greenyellow;
+    margin: 0.5rem;
+    cursor: pointer;
+    padding: 0.4rem;
+}
+
+#menu-project-buttons button:hover,
+#menu-todo-buttons button:hover {
+    background-color: rgb(148, 148, 231);
+}
+
+#project-container {
+    width: 45vw;
+    background-color: rgb(231, 224, 224);
+    font-size: 18px;
+}
+
+.project {
+    text-align: center;
+    border: 1px solid black;
+    cursor: pointer;
+    padding: 0.5rem 0;
+}
+
+.project:hover {
+    background-color: rgb(75, 143, 232);
+}
+
+#todos-container {
+    width: 55vw;
+    border: 1px solid black;
+}
