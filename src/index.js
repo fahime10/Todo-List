@@ -5,7 +5,6 @@ import { Todo } from './modules/todo.js';
 function loadProjects() {
     const projectsContainer = document.querySelector('#project-container');
     const firstProject = new Project("First Project");
-    const secondProject = new Project("Second Project");
 
     const projectDiv = document.createElement('div');
     projectDiv.textContent = firstProject.name;
@@ -15,12 +14,7 @@ function loadProjects() {
 
     firstProject.addTodo(todo);
 
-    const projectDiv2 = document.createElement('div');
-    projectDiv2.textContent = secondProject.name;
-    projectDiv2.classList.add('project');
-
     projectsContainer.appendChild(projectDiv);
-    projectsContainer.appendChild(projectDiv2);
 
     const projects = document.querySelectorAll('.project');
     projects.forEach((project) => {
@@ -36,3 +30,49 @@ function loadProjects() {
 }
 
 document.body.appendChild(loadProjects());
+
+function displayAddForm() {
+    document.querySelectorAll('.project').forEach((project) => {
+        project.style.display = "none";
+    });
+    document.getElementById('form-project').style.display = "block";
+}
+document.querySelector('#add-project').addEventListener('click', displayAddForm);
+
+function submitProject(event) {
+    event.preventDefault();
+    const projectName = document.querySelector('#project-name');
+    if (validateProjectName(projectName.value)) {
+        const newProject = new Project(`${projectName.value}`);
+        const projectsContainer = document.querySelector('#project-container');
+        const newProjectDiv = document.createElement('div');
+        newProjectDiv.textContent = newProject.name;
+        newProjectDiv.classList.add('project');
+        projectsContainer.appendChild(newProjectDiv);
+
+        document.querySelectorAll('.project').forEach((project) => {
+            project.style.display = "block";
+        });
+
+        document.querySelector('#form-project').style.display = "none";
+        projectName.value = "";
+    }
+}
+document.querySelector('#submit-project').addEventListener('click', submitProject);
+
+function validateProjectName(projectName) {
+    if (projectName.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function cancelProject(event) {
+    event.preventDefault();
+    document.querySelector('#form-project').style.display = "none";
+    document.querySelectorAll('.project').forEach((project) => {
+        project.style.display = "block";
+    });
+}
+document.querySelector('#cancel-project').addEventListener('click', cancelProject);
