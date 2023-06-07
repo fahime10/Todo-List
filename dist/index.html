@@ -9,12 +9,17 @@
         <div id="todo-list-title">Todo List</div>
         <div id="main-container">
             <div id="menu-project-buttons">
-                <button>Add new project</button>
+                <button id="add-project">Add new project</button>
                 <button>Edit selected project</button>
                 <button>Remove selected project</button>
             </div>
             <div id="project-container">
-
+                <div id="form-project">
+                    <label for="project-name">Project Name:</label>
+                    <input type="text" id="project-name" name="project-name" maxlength="20">
+                    <button type="submit" id="submit-project">Submit</button>
+                    <button type="button" id="cancel-project">Cancel</button>
+                </div>
             </div>
             <div id="todos-container">
                 <div id="menu-todo-buttons">

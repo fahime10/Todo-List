@@ -46,6 +46,20 @@ body {
     font-size: 18px;
 }
 
+#form-project {
+    display: none;
+    height: 2rem;
+    padding: 1rem;
+}
+
+#form-project button {
+    background-color: aqua;
+}
+
+#form-project button:hover {
+    background-color: rgb(205, 228, 170);
+}
+
 .project {
     text-align: center;
     border: 1px solid black;
