@@ -2,16 +2,17 @@ body {
     margin: 0;
 }
 
-#main-container {
-    display: flex;
-}
-
 #todo-list-title {
     background-color: rgb(216, 63, 63);
     color: white;
     height: 8vh;
     font-size: 37px;
     text-align: center;
+}
+
+#main-container {
+    display: grid;
+    grid-template-columns: 45vw 55vw;
 }
 
 #menu-project-buttons {
@@ -44,6 +45,8 @@ body {
     width: 45vw;
     background-color: rgb(231, 224, 224);
     font-size: 18px;
+    grid-column: 1;
+    grid-row: 2;
 }
 
 #form-project {
@@ -74,4 +77,12 @@ body {
 #todos-container {
     width: 55vw;
     border: 1px solid black;
+    grid-column: 2;
+}
+
+.todo {
+    text-align: center;
+    border: 1px solid black;
+    cursor: pointer;
+    padding: 0.5rem 0;
 }
