@@ -49,17 +49,17 @@ body {
     grid-row: 2;
 }
 
-#form-project {
+#form-project, #edit-form-project {
     display: none;
     height: 2rem;
     padding: 1rem;
 }
 
-#form-project button {
+#form-project button, #edit-form-project button {
     background-color: aqua;
 }
 
-#form-project button:hover {
+#form-project button:hover, #edit-form-project button:hover {
     background-color: rgb(205, 228, 170);
 }
 
