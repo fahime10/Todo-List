@@ -6,38 +6,37 @@ let projects = [];
 
 function loadProjects() {
     const projectsContainer = document.querySelector('#project-container');
-    const firstProject = new Project(1, "First Project");
-    const secondProject = new Project(2, "Second Project");
 
-    const projectDiv = document.createElement('div');
-    projectDiv.classList.add('project');
-    projectDiv.append(firstProject.name);
-    projectDiv.id = firstProject.id;
+    // const todo = new Todo("First todo", "Description normal", "06/06/2023", "High", "No");
+    // const todo2 = new Todo("Second todo", "Description new", "06/06/2023", "High", "No");
+    // const todo3 = new Todo("Third todo", "Description normal", "06/06/2023", "High", "No");
+    // const todo4 = new Todo("Fourth todo", "Description new", "06/06/2023", "High", "No");
+    // const todo5 = new Todo("Fifth todo", "Description normal", "06/06/2023", "High", "No");
+    // const todo6 = new Todo("Sixth todo", "Description new", "06/06/2023", "High", "No");
 
-    const projectDiv2 = document.createElement('div');
-    projectDiv2.classList.add('project');
-    projectDiv2.append(secondProject.name);
-    projectDiv2.id = secondProject.id;
+    const items = {...localStorage};
 
-    projects.push(firstProject, secondProject);
+    for (let i = 0; i <= localStorage.length + 1; i++) {
+        if (JSON.parse(items[i] !== undefined)) {
+            let item = JSON.parse(items[i]);
+            if (!isNaN(item.id)) {
+                if (item !== null) {
+                    projects.push(item);
+                    const projectDiv = document.createElement('div');
+                    projectDiv.classList.add('project');
+                    projectDiv.innerHTML = item.project_name;
+                    projectDiv.id = item.id;
+                    projectsContainer.appendChild(projectDiv);
+                }
+            }
+        }
+    }
 
-    const todo = new Todo("First todo", "Description normal", "06/06/2023", "High", "No");
-    const todo2 = new Todo("Second todo", "Description new", "06/06/2023", "High", "No");
-    const todo3 = new Todo("Third todo", "Description normal", "06/06/2023", "High", "No");
-    const todo4 = new Todo("Fourth todo", "Description new", "06/06/2023", "High", "No");
-    const todo5 = new Todo("Fifth todo", "Description normal", "06/06/2023", "High", "No");
-    const todo6 = new Todo("Sixth todo", "Description new", "06/06/2023", "High", "No");
+    applyEventListener();
+}
+loadProjects();
 
-    firstProject.addTodo(todo);
-    firstProject.addTodo(todo2);
-    secondProject.addTodo(todo3);
-    secondProject.addTodo(todo4);
-    secondProject.addTodo(todo5);
-    secondProject.addTodo(todo6);
-
-    projectsContainer.append(projectDiv);
-    projectsContainer.appendChild(projectDiv2);
-
+function applyEventListener() {
     const allProjects = document.querySelectorAll('.project');
     allProjects.forEach((project) => {
         project.addEventListener("click", () => {
@@ -45,11 +44,10 @@ function loadProjects() {
                 project.style.backgroundColor = "rgb(231, 224, 224)";
             });
             project.style.backgroundColor = "rgb(75, 143, 232)";
-            loadTodos(projects[project.id - 1]);
+            // loadTodos(projects[project.id - 1]);
         });
     });
 }
-loadProjects();
 
 function loadTodos(projectSelected) {
     const todosContainer = document.querySelector('#todos-container');
@@ -81,14 +79,26 @@ document.querySelector('#add-project').addEventListener('click', displayAddForm)
 function submitProject(event) {
     event.preventDefault();
     const projectName = document.querySelector('#project-name');
+    
     if (validateProjectName(projectName.value)) {
-        const newProject = new Project(3, `${projectName.value}`);
+        const newProject = new Project(localStorage.length + 1, `${projectName.value}`);
         const projectsContainer = document.querySelector('#project-container');
         const newProjectDiv = document.createElement('div');
         newProjectDiv.textContent = newProject.name;
         newProjectDiv.classList.add('project');
         newProjectDiv.id = newProject.id;
         projectsContainer.appendChild(newProjectDiv);
+        
+        applyEventListener();
+
+        const data = {
+            id: newProject.id,
+            project_name: newProject.name,
+            todos: newProject.todos
+        };
+
+        localStorage.setItem(`${newProject.id}`, JSON.stringify(data));
+        projects.push(`${newProject.name}`);
 
         document.querySelectorAll('.project').forEach((project) => {
             project.style.display = "flex";
@@ -121,7 +131,36 @@ function editSelectedProject() {
     const projects = document.querySelectorAll('.project');
     projects.forEach((project) => {
         if (project.style.backgroundColor == "rgb(75, 143, 232)") {
-
+            document.querySelectorAll('.project').forEach((project) => {
+                project.style.display = "none";
+            });
+            document.getElementById('edit-form-project').style.display = "block";
         }
     });
 }
+document.querySelector('#edit-project').addEventListener('click', editSelectedProject);
+
+function applyEditProject() {
+    document.querySelector('#edit-project-name').value = project.innerHTML;
+
+            const data = {
+                id: project.id,
+                project_name: document.querySelector('#edit-project-name').value,
+                todos: localStorage.getItem(project.id).todos
+            };
+
+            localStorage.setItem(project.id, JSON.stringify(data));
+            projects = [];
+            loadProjects();
+}
+
+
+
+function cancelEditProject(event) {
+    event.preventDefault();
+    document.querySelector('#edit-form-project').style.display = "none";
+    document.querySelectorAll('.project').forEach((project) => {
+        project.style.display = "block";
+    });
+}
+document.querySelector('#cancel-edit-project').addEventListener('click', cancelEditProject);
