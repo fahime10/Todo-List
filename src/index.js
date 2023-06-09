@@ -128,33 +128,39 @@ function cancelProject(event) {
 document.querySelector('#cancel-project').addEventListener('click', cancelProject);
 
 function editSelectedProject() {
-    const projects = document.querySelectorAll('.project');
-    projects.forEach((project) => {
+    const allProjects = document.querySelectorAll('.project');
+    allProjects.forEach((project) => {
         if (project.style.backgroundColor == "rgb(75, 143, 232)") {
+            document.getElementById('edit-form-project').style.display = "block";
             document.querySelectorAll('.project').forEach((project) => {
                 project.style.display = "none";
             });
-            document.getElementById('edit-form-project').style.display = "block";
+            document.querySelector('#edit-project-name').value = project.innerHTML;
         }
     });
 }
 document.querySelector('#edit-project').addEventListener('click', editSelectedProject);
 
 function applyEditProject() {
-    document.querySelector('#edit-project-name').value = project.innerHTML;
+    let value = document.querySelector('#edit-project-name').value;
 
+    const allProjects = document.querySelectorAll('.project');
+    allProjects.forEach((project) => {
+        if (project.style.backgroundColor == "rgb(75, 143, 232)") {
             const data = {
                 id: project.id,
-                project_name: document.querySelector('#edit-project-name').value,
+                project_name: value,
                 todos: localStorage.getItem(project.id).todos
             };
-
+        
             localStorage.setItem(project.id, JSON.stringify(data));
             projects = [];
             loadProjects();
+            document.querySelector('#edit-form-project').style.display = "none";
+        }
+    });
 }
-
-
+document.querySelector('#submit-edit-project').addEventListener('click', applyEditProject);
 
 function cancelEditProject(event) {
     event.preventDefault();
