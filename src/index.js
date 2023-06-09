@@ -3,6 +3,7 @@ import { Project } from './modules/project.js';
 import { Todo } from './modules/todo.js';
 
 let projects = [];
+let todos = [];
 
 function loadProjects() {
     const projectsContainer = document.querySelector('#project-container');
@@ -44,28 +45,44 @@ function applyEventListener() {
                 project.style.backgroundColor = "rgb(231, 224, 224)";
             });
             project.style.backgroundColor = "rgb(75, 143, 232)";
-            // loadTodos(projects[project.id - 1]);
+            loadTodos(JSON.parse(localStorage.getItem(project.id)).todos, project.id);
         });
     });
 }
 
-function loadTodos(projectSelected) {
+function loadTodos(allTodos, project_id) {
     const todosContainer = document.querySelector('#todos-container');
-    todosContainer.innerHTML = "";
 
-    const projects = document.querySelectorAll('.project');
-    projects.forEach((project) => {
-        if (project.style.backgroundColor == "rgb(75, 143, 232)") {
-            const todos = projectSelected.viewTodos();
-            todos.forEach((todo) => {
-                const todoDiv = document.createElement('div');
-                todoDiv.innerHTML = projectSelected.stringFormat(todo);
-                todoDiv.classList.add('todo');
+    todos = [];
+    
+    allTodos.forEach((todo) => {
+        todos.push(todo);
+        const todoDiv = document.createElement('div');
+        todoDiv.innerHTML = `${todo.title} - ${todo.description}, due by ${todo.date}, priority: ${todo.priority}`;
+        let checkbox = document.createElement('input');
+        checkbox.setAttribute('type', 'checkbox');
+        todoDiv.append(checkbox);
+        todoDiv.classList.add('todo');
+        todoDiv.id = project_id;
 
-                todosContainer.appendChild(todoDiv);
-            });
-        }
+        todosContainer.appendChild(todoDiv);
     });
+
+
+
+    // const projects = document.querySelectorAll('.project');
+    // projects.forEach((project) => {
+    //     if (project.style.backgroundColor == "rgb(75, 143, 232)") {
+    //         const todos = projectSelected.viewTodos();
+    //         todos.forEach((todo) => {
+    //             const todoDiv = document.createElement('div');
+    //             todoDiv.innerHTML = projectSelected.stringFormat(todo);
+    //             todoDiv.classList.add('todo');
+
+    //             todosContainer.appendChild(todoDiv);
+    //         });
+    //     }
+    // });
 }
 
 function displayAddForm() {
@@ -81,7 +98,7 @@ function submitProject(event) {
     const projectName = document.querySelector('#project-name');
     
     if (validateProjectName(projectName.value)) {
-        const newProject = new Project(localStorage.length + 1, `${projectName.value}`);
+        const newProject = new Project(localStorage.length + 1, `${projectName.value}`, []);
         const projectsContainer = document.querySelector('#project-container');
         const newProjectDiv = document.createElement('div');
         newProjectDiv.textContent = newProject.name;
@@ -126,8 +143,9 @@ function cancelProject(event) {
     });
 }
 document.querySelector('#cancel-project').addEventListener('click', cancelProject);
+//////////////////////////////////////////////////////////////////////////////////////////
 
-function editSelectedProject() {
+function displayEditProject() {
     const allProjects = document.querySelectorAll('.project');
     allProjects.forEach((project) => {
         if (project.style.backgroundColor == "rgb(75, 143, 232)") {
@@ -139,9 +157,9 @@ function editSelectedProject() {
         }
     });
 }
-document.querySelector('#edit-project').addEventListener('click', editSelectedProject);
+document.querySelector('#edit-project').addEventListener('click', displayEditProject);
 
-function applyEditProject() {
+function editSelectedProject() {
     let value = document.querySelector('#edit-project-name').value;
 
     const allProjects = document.querySelectorAll('.project');
@@ -160,7 +178,7 @@ function applyEditProject() {
         }
     });
 }
-document.querySelector('#submit-edit-project').addEventListener('click', applyEditProject);
+document.querySelector('#submit-edit-project').addEventListener('click', editSelectedProject);
 
 function cancelEditProject(event) {
     event.preventDefault();
@@ -170,10 +188,9 @@ function cancelEditProject(event) {
     });
 }
 document.querySelector('#cancel-edit-project').addEventListener('click', cancelEditProject);
+////////////////////////////////////////////////////////////////////////////
 
-
-
-function deleteSelectedProject() {
+function displayDeleteProject() {
     const allProjects = document.querySelectorAll('.project');
     allProjects.forEach((project) => {
         if (project.style.backgroundColor == "rgb(75, 143, 232)") {
@@ -185,9 +202,9 @@ function deleteSelectedProject() {
         }
     });
 }
-document.querySelector('#remove-project').addEventListener('click', deleteSelectedProject);
+document.querySelector('#remove-project').addEventListener('click', displayDeleteProject);
 
-function applyDeleteProject() {
+function deleteSelectedProject() {
     const allProjects = document.querySelectorAll('.project');
     allProjects.forEach((project) => {
         if (project.style.backgroundColor == "rgb(75, 143, 232)") {
@@ -199,7 +216,7 @@ function applyDeleteProject() {
         }
     });
 }
-document.querySelector('#submit-delete-project').addEventListener('click', applyDeleteProject);
+document.querySelector('#submit-delete-project').addEventListener('click', deleteSelectedProject);
 
 function cancelDeleteProject(event) {
     event.preventDefault();
@@ -209,3 +226,84 @@ function cancelDeleteProject(event) {
     });
 }
 document.querySelector('#cancel-delete-project').addEventListener('click', cancelDeleteProject);
+////////////////////////////////////////////////////////////////////////////
+
+function displayAddTodo() {
+    const allProjects = document.querySelectorAll('.project');
+    allProjects.forEach((project) => {
+        if (project.style.backgroundColor == "rgb(75, 143, 232)") {
+            document.querySelector('#form-todo').style.display = "grid";
+        }
+    });
+
+    const allTodos = document.querySelectorAll('.todo');
+    allTodos.forEach((todo) => {
+        todo.style.display = "none";
+    });
+}
+document.querySelector('#add-todo').addEventListener('click', displayAddTodo);
+
+function addTodo() {
+    let title = document.querySelector('#title').value;
+    let description = document.querySelector('#description').value;
+    let date = document.querySelector('#date').value;
+    let priority = document.querySelector('#priority').value;
+    let project_id;
+    let name;
+
+    const allProjects = document.querySelectorAll('.project');
+    allProjects.forEach((project) => {
+        if (project.style.backgroundColor == "rgb(75, 143, 232)") {
+            project_id = project.id;
+            name = project.innerHTML;
+        }
+    });
+
+    if (validateTodo(title, description, date, priority)) {
+        let newTodo = new Todo(project_id, title, description, date, priority, false);
+        const todosContainer = document.querySelector('#todos-container');
+        const newTodoDiv = document.createElement('div');
+        newTodoDiv.classList.add('todo');
+        newTodoDiv.id = project_id;
+        todosContainer.appendChild(newTodoDiv);
+
+        todos.push(newTodo);
+
+        // applyTodoListener();
+
+        const data = {
+            id: project_id,
+            project_name: name,
+            todos: todos
+        };
+
+        localStorage.setItem(`${project_id}`, JSON.stringify(data));
+
+        document.querySelectorAll('.todo').forEach((todo) => {
+            todo.style.display = "flex";
+        });
+
+        document.querySelector('#form-todo').style.display = "none";
+
+
+    }
+}
+document.querySelector('#submit-todo').addEventListener('click', addTodo)
+
+function validateTodo(title, description, date, priority) {
+    if (title.length > 0 && description.length > 0 && date.length > 0 && priority.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function cancelAddTodo() {
+    document.querySelector('#form-todo').style.display = "none";
+
+    const allTodos = document.querySelectorAll('.todo');
+    allTodos.forEach((todo) => {
+        todo.style.display = "flex";
+    });
+}
+document.querySelector('#cancel-todo').addEventListener('click', cancelAddTodo);

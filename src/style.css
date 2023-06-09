@@ -49,17 +49,24 @@ body {
     grid-row: 2;
 }
 
-#form-project, #edit-form-project, #remove-form-project {
+#form-project, #edit-form-project, #remove-form-project,
+#form-todo, #edit-form-todo, #remove-form-todo {
     display: none;
     height: 2rem;
     padding: 1rem;
 }
 
-#form-project button, #edit-form-project button, #remove-form-project button {
+#form-todo input {
+    height: 1rem;
+}
+
+#form-project button, #edit-form-project button, #remove-form-project button,
+#form-todo button, #edit-form-todo button, #remove-form-todo button {
     background-color: aqua;
 }
 
-#form-project button:hover, #edit-form-project button:hover, #remove-form-project button:hover {
+#form-project button:hover, #edit-form-project button:hover, #remove-form-project button:hover,
+#form-todo button:hover, #edit-form-todo button:hover, #remove-form-todo button:hover {
     background-color: rgb(205, 228, 170);
 }
 
@@ -76,7 +83,6 @@ body {
 
 #todos-container {
     width: 55vw;
-    border: 1px solid black;
     grid-column: 2;
 }
 
@@ -85,4 +91,8 @@ body {
     border: 1px solid black;
     cursor: pointer;
     padding: 0.5rem 0;
+}
+
+.todo:hover {
+    background-color: rgb(75, 143, 232);
 }
