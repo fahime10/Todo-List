@@ -1,8 +1,8 @@
 export class Project {
-    constructor(id, name) {
+    constructor(id, name, todos) {
         this.id = id;
         this.name = name;
-        this.todos = [];
+        this.todos = todos;
     }
 
     addTodo(todo) {
@@ -19,10 +19,5 @@ export class Project {
 
     viewTodos() {
         return this.todos;
-    }
-
-    stringFormat(todo) {
-        return todo.title + " - " + todo.description + ", to do by " + todo.date +
-                ", priority: " + todo.priority + ", completed: " + todo.completed;
     }
 }
