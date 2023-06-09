@@ -170,3 +170,42 @@ function cancelEditProject(event) {
     });
 }
 document.querySelector('#cancel-edit-project').addEventListener('click', cancelEditProject);
+
+
+
+function deleteSelectedProject() {
+    const allProjects = document.querySelectorAll('.project');
+    allProjects.forEach((project) => {
+        if (project.style.backgroundColor == "rgb(75, 143, 232)") {
+            document.getElementById('remove-form-project').style.display = "block";
+            document.querySelectorAll('.project').forEach((project) => {
+                project.style.display = "none";
+            });
+            document.querySelector('#delete-project-name').value = project.innerHTML;
+        }
+    });
+}
+document.querySelector('#remove-project').addEventListener('click', deleteSelectedProject);
+
+function applyDeleteProject() {
+    const allProjects = document.querySelectorAll('.project');
+    allProjects.forEach((project) => {
+        if (project.style.backgroundColor == "rgb(75, 143, 232)") {
+            localStorage.removeItem(project.id);
+
+            projects = [];
+            loadProjects();
+            document.querySelector('#remove-form-project').style.display = "none";
+        }
+    });
+}
+document.querySelector('#submit-delete-project').addEventListener('click', applyDeleteProject);
+
+function cancelDeleteProject(event) {
+    event.preventDefault();
+    document.querySelector('#remove-form-project').style.display = "none";
+    document.querySelectorAll('.project').forEach((project) => {
+        project.style.display = "block";
+    });
+}
+document.querySelector('#cancel-delete-project').addEventListener('click', cancelDeleteProject);
