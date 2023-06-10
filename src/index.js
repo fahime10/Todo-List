@@ -4,16 +4,13 @@ import { Todo } from './modules/todo.js';
 
 let projects = [];
 let todos = [];
+let project_id = 0;
+let project_name = "";
+let todo_counter = 0;
+let todo_id = 0;
 
 function loadProjects() {
     const projectsContainer = document.querySelector('#project-container');
-
-    // const todo = new Todo("First todo", "Description normal", "06/06/2023", "High", "No");
-    // const todo2 = new Todo("Second todo", "Description new", "06/06/2023", "High", "No");
-    // const todo3 = new Todo("Third todo", "Description normal", "06/06/2023", "High", "No");
-    // const todo4 = new Todo("Fourth todo", "Description new", "06/06/2023", "High", "No");
-    // const todo5 = new Todo("Fifth todo", "Description normal", "06/06/2023", "High", "No");
-    // const todo6 = new Todo("Sixth todo", "Description new", "06/06/2023", "High", "No");
 
     const items = {...localStorage};
 
@@ -45,17 +42,33 @@ function applyEventListener() {
                 project.style.backgroundColor = "rgb(231, 224, 224)";
             });
             project.style.backgroundColor = "rgb(75, 143, 232)";
+            project_id = project.id;
+            project_name = project.innerHTML;
             loadTodos(JSON.parse(localStorage.getItem(project.id)).todos, project.id);
         });
     });
 }
 
+function applyTodoEventListener() {
+    const allTodos = document.querySelectorAll('.todo');
+    allTodos.forEach((todo) => {
+        todo.addEventListener("click", () => {
+            allTodos.forEach((todo) => {
+                todo.style.backgroundColor = "#FFFFFF";
+            });
+            todo.style.backgroundColor = "rgb(75, 143, 232)";
+        });
+    });
+}
+
 function loadTodos(allTodos, project_id) {
-    const todosContainer = document.querySelector('#todos-container');
+    const allTodosContainer = document.querySelector('#all-todos');
+    allTodosContainer.innerHTML = "";
 
     todos = [];
     
     allTodos.forEach((todo) => {
+        todo_counter++;
         todos.push(todo);
         const todoDiv = document.createElement('div');
         todoDiv.innerHTML = `${todo.title} - ${todo.description}, due by ${todo.date}, priority: ${todo.priority}`;
@@ -64,25 +77,12 @@ function loadTodos(allTodos, project_id) {
         todoDiv.append(checkbox);
         todoDiv.classList.add('todo');
         todoDiv.id = project_id;
+        todoDiv.title = todo_counter;
 
-        todosContainer.appendChild(todoDiv);
+        allTodosContainer.appendChild(todoDiv);
     });
 
-
-
-    // const projects = document.querySelectorAll('.project');
-    // projects.forEach((project) => {
-    //     if (project.style.backgroundColor == "rgb(75, 143, 232)") {
-    //         const todos = projectSelected.viewTodos();
-    //         todos.forEach((todo) => {
-    //             const todoDiv = document.createElement('div');
-    //             todoDiv.innerHTML = projectSelected.stringFormat(todo);
-    //             todoDiv.classList.add('todo');
-
-    //             todosContainer.appendChild(todoDiv);
-    //         });
-    //     }
-    // });
+    applyTodoEventListener();
 }
 
 function displayAddForm() {
@@ -269,7 +269,7 @@ function addTodo() {
 
         todos.push(newTodo);
 
-        // applyTodoListener();
+        applyTodoEventListener();
 
         const data = {
             id: project_id,
@@ -307,3 +307,69 @@ function cancelAddTodo() {
     });
 }
 document.querySelector('#cancel-todo').addEventListener('click', cancelAddTodo);
+///////////////////////////////////////////////////////////////////////////////////
+
+function displayEditTodo() {
+    const allTodos = document.querySelectorAll('.todo');
+    allTodos.forEach((todo) => {
+        if (todo.style.backgroundColor == "rgb(75, 143, 232)") {
+            document.querySelector('#edit-form-todo').style.display = "grid";
+            document.querySelector('#all-todos').style.display = "none";
+        }
+    });
+}
+document.querySelector('#edit-todo').addEventListener('click', displayEditTodo);
+
+function editTodo() {
+    const allTodos = document.querySelectorAll('.todo');
+    allTodos.forEach((todo) => {
+        if (todo.style.backgroundColor == "rgb(75, 143, 232)") {
+            
+        }
+    });
+}
+document.querySelector('#submit-edit-todo').addEventListener('click', editTodo);
+
+function cancelEditTodo() {
+    document.querySelector('#edit-form-todo').style.display = "none";
+    allTodos = document.querySelector('#all-todos').style.display = "block";
+}
+document.querySelector('#cancel-edit-todo').addEventListener('click', cancelEditTodo);
+/////////////////////////////////////////////////////////////////////////////////////
+
+function displayDeleteTodo() {
+    const allTodos = document.querySelectorAll('.todo');
+    allTodos.forEach((todo) => {
+        if (todo.style.backgroundColor == "rgb(75, 143, 232)") {
+            todo.style.backgroundColor = "#FFFFFF";
+            document.querySelector('#remove-form-todo').style.display = "grid";
+            document.querySelector('#all-todos').style.display = "none";
+            document.querySelector('#project-id').appendChild(todo);
+            todo_id = todo.title;
+        }
+    });
+}
+document.querySelector('#remove-todo').addEventListener('click', displayDeleteTodo);
+
+function deleteTodo() {
+    todos.splice(todo_id - 1, todo_id);
+
+    const data = {
+        id: project_id,
+        project_name: project_name,
+        todos: todos
+    }
+
+    localStorage.setItem(`${project_id}`, JSON.stringify(data));
+
+    document.querySelector('#remove-form-todo').style.display = "none";
+    document.querySelector('#all-todos').style.display = "block";
+}
+document.querySelector('#yes-todo').addEventListener('click', deleteTodo);
+
+function cancelDeleteTodo() {
+    document.querySelector('#remove-form-todo').style.display = "none";
+    document.querySelector('#all-todos').style.display = "block";
+    todo_counter = 0;
+}
+document.querySelector('#no-todo').addEventListener('click', cancelDeleteTodo);
